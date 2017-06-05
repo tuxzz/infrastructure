@@ -1,6 +1,25 @@
 def dummyAugment(a, b):
     pass
 
+def augmentCallbacks(compute):
+    def propagate(start, stop):
+        node = start
+        while(node is not stop):
+            augmented = compute(node)
+            if(node.augmented == augmented):
+                break
+            node.augmented = augmented
+            node = node.parent
+
+    def copy(old, new):
+        new.augmented = old.augmented
+
+    def rotate(old, new):
+        new.augmented = old.augmented
+        old.augmented = compute(old)
+
+    return propagate, copy, rotate
+
 class RBNode:
     Red = "Red"
     Black = "Black"
@@ -12,6 +31,7 @@ class RBNode:
         self.leftNode = leftNode
         self.rightNode = rightNode
         self.color = color
+        self.augmented = None
 
     def isIsolated(self):
         return self.parent is self
@@ -54,7 +74,7 @@ class RBNode:
             parent = node.parent
         return parent
 
-    def _leftDeepestNode(self):
+    def leftDeepestNode(self):
         node = self
         while(True):
             while(node.leftNode is not None):
@@ -67,7 +87,7 @@ class RBNode:
     def nextPostOrderNode(self):
         parent = self.parent
         if(parent is not None and self is parent.leftNode and parent.rightNode is not None):
-            return parent.rightNode._leftDeepestNode()
+            return parent.rightNode.leftDeepestNode()
         return parent
 
 class RBTreeCore:
@@ -98,7 +118,7 @@ class RBTreeCore:
     def firstPostOrderNode(self):
         if(self.isEmpty()):
             return None
-        return self.root._leftDeepestNode()
+        return self.root.leftDeepestNode()
 
     def _changeChild(self, old, new, parent):
         if(parent is not None):
@@ -113,6 +133,15 @@ class RBTreeCore:
         parent = old.parent
         new.parent, new.color = old.parent, old.color
         old.parent, old.color = new, color
+        self._changeChild(old, new, parent)
+
+    def replace(self, old, new):
+        parent = old.parent
+        new.parent, new.color, new.augmented = parent, old.color, old.augmented
+        if(old.leftNode is not None):
+            old.leftNode.parent = new
+        if(old.rightNode is not None):
+            old.rightNode.parent = new
         self._changeChild(old, new, parent)
 
     def insertColor(self, node, augmentRotate = dummyAugment):
@@ -180,7 +209,7 @@ class RBTreeCore:
                 augmentRotate(gparent, parent)
                 break
 
-    def _augmentedEraseHelper(self, node, augmentCopy, augmentPropagate):
+    def _augmentedEraseHelper(self, node, augmentPropagate, augmentCopy):
         child = node.rightNode
         tmp = node.leftNode
         if(tmp is None):
@@ -321,7 +350,7 @@ class RBTreeCore:
                 augmentRotate(parent, sibling)
                 break
 
-    def erase(self, node):
-        rebalance = self._augmentedEraseHelper(node, dummyAugment, dummyAugment)
+    def erase(self, node, augmentPropagate = dummyAugment, augmentCopy = dummyAugment, augmentRotate = dummyAugment):
+        rebalance = self._augmentedEraseHelper(node, augmentPropagate, augmentCopy)
         if(rebalance is not None):
-            self._eraseColorHelper(rebalance, dummyAugment)
+            self._eraseColorHelper(rebalance, augmentRotate)

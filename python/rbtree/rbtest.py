@@ -16,6 +16,8 @@ class Data(RBNode):
         node = self
         if(self.parent is None):
             blackCountList = []
+        else:
+            assert(self is self.parent.leftNode or self is self.parent.rightNode)
         assert(not (lastColor is RBNode.Red and self.color is RBNode.Red))
         if(node.leftNode is not None):
             assert(node.leftNode.x < node.x)
@@ -66,6 +68,19 @@ def insert(tree, data):
                 raise KeyError("Key conflict")
     tree.insertColor(data)
 
+def search(tree, x):
+    node = tree.root
+    if(node is None):
+        raise KeyError("No such key")
+    while(node is not None):
+        if(x < node.x):
+            node = node.leftNode
+        elif(x > node.x):
+            node = node.rightNode
+        else:
+            return node
+    raise KeyError("No such key")
+
 def erase(tree, data):
     tree.erase(data)
     data.markAsIsolated()
@@ -83,3 +98,18 @@ for x in deleteList:
     erase(tree, x)
 tree.root.printTree()
 tree.root.verify()
+assert(search(tree, 6).x == 6)
+assert(search(tree, 254).x == 254)
+assert(search(tree, 3).x == 3)
+assert(search(tree, 15).x == 15)
+assert(search(tree, 1).x == 1)
+try:
+    search(tree, 999)
+    assert(False)
+except KeyError:
+    pass
+try:
+    search(tree, 4)
+    assert(False)
+except KeyError:
+    pass
