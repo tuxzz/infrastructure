@@ -1,5 +1,4 @@
-#ifndef FIND_H
-#define FIND_H
+#pragma once
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findL(ForwardIt begin, ForwardIt end, const T &value, GetVal get);
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findG(ForwardIt begin, ForwardIt end, const T &value, GetVal get);
@@ -17,5 +16,3 @@ template<typename ForwardIt, typename T>static inline ForwardIt matchLEQ(Forward
 template<typename ForwardIt, typename T>static inline ForwardIt matchGEQ(ForwardIt begin, ForwardIt end, const T &value);
 
 #include "find_impl.hpp"
-
-#endif // FIND_H
