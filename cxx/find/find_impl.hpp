@@ -1,5 +1,4 @@
-#ifndef FIND_IMPL_HPP
-#define FIND_IMPL_HPP
+#pragma once
 
 #include "find.hpp"
 #include <algorithm>
@@ -71,5 +70,3 @@ template<typename ForwardIt, typename T>static inline ForwardIt matchLEQ(Forward
 
 template<typename ForwardIt, typename T>static inline ForwardIt matchGEQ(ForwardIt begin, ForwardIt end, const T &value)
 { return matchGEQ(begin, end, value, [](const auto &v){return v;}); }
-
-#endif // FIND_IMPL_HPP
