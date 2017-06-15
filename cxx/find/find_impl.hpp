@@ -5,47 +5,47 @@
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findL(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const auto &a, const T &b){ return get(a) < b; };
+  auto cmpFunc = [&](const auto &v, const T &b){ return get(v) < b; };
   auto it = std::lower_bound(begin, end, value, cmpFunc);
   return it == begin ? end : it - 1;
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findG(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const T &a, const auto &a){ return a < get(a); };
+  auto cmpFunc = [&](const T &a, const auto &v){ return a < get(v); };
   return std::upper_bound(begin, end, value, cmpFunc);
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findLEQ(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const T &a, const auto &a){ return a < get(a); };
+  auto cmpFunc = [&](const T &a, const auto &v){ return a < get(v); };
   auto it = std::upper_bound(begin, end, value, cmpFunc);
   return it == begin ? end : it - 1;
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt findGEQ(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const auto &a, const T &b){ return get(a) < b; };
+  auto cmpFunc = [&](const auto &v, const T &b){ return get(v) < b; };
   return std::lower_bound(begin, end, value, cmpFunc);
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt find(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const auto &a, const T &b){ return get(a) < b; };
+  auto cmpFunc = [&](const auto &v, const T &b){ return get(v) < b; };
   auto it = std::lower_bound(begin, end, value, cmpFunc);
   return it != end && get(*it) == value ? it : end;
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt matchLEQ(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const T &a, const auto &a){ return a < get(a); };
+  auto cmpFunc = [&](const T &a, const auto &v){ return a < get(v); };
   auto it = std::upper_bound(begin, end, value, cmpFunc);
   return it == begin ? it : it - 1;
 }
 
 template<typename ForwardIt, typename T, typename GetVal>static inline ForwardIt matchGEQ(ForwardIt begin, ForwardIt end, const T &value, GetVal get)
 {
-  auto cmpFunc = [&](const auto &a, const T &b){ return get(a) < b; };
+  auto cmpFunc = [&](const auto &v, const T &b){ return get(v) < b; };
   auto it = std::lower_bound(begin, end, value, cmpFunc);
   return it == end ? end - 1 : it;
 }
